@@ -11,19 +11,22 @@ module.exports = async function init(opts) {
     sh(`gh repo create ${name} ${opts.private ? '--private' : '--public'} --source=. --remote=origin`);
   }
 
-  sh(`git checkout -B ${config.developBranch}`);
-  sh(`git push -u origin ${config.developBranch}`);
-  sh(`git checkout -B ${config.baseBranch}`);
-  sh(`git push -u origin ${config.baseBranch}`);
-  sh(`git checkout ${config.developBranch}`);
-
+  // Escribir plantillas primero
   writeFile('.github/workflows/release.yml', await fetchTemplate('release-caller.yml'));
   writeFile('.github/workflows/pr-checks.yml', await fetchTemplate('pr-checks-caller.yml'));
   writeFile('.github/workflows/labeler.yml', await fetchTemplate('labeler-caller.yml'));
+  writeFile('.github/workflows/close-issue.yml', await fetchTemplate('close-issue-caller.yml'));
   writeFile('.github/labeler.yml', await fetchTemplate('labeler.yml'));
   writeFile('AGENTS.md', await fetchTemplate('AGENTS.md'));
   writeFile('commitlint.config.js', await fetchTemplate('commitlint.config.js'));
   writeFile('.wfrc.json', await fetchTemplate('.wfrc.json'));
+
+  sh(`git checkout -B ${config.baseBranch}`);
+  sh('git add . && git commit -m "chore: bootstrap flujo git estandar"');
+  sh(`git push -u origin ${config.baseBranch}`);
+
+  sh(`git checkout -B ${config.developBranch}`);
+  sh(`git push -u origin ${config.developBranch}`);
 
   const [owner, repoName] = shOut('gh repo view --json nameWithOwner -q .nameWithOwner').split('/');
   for (const branch of [config.baseBranch, config.developBranch]) {
@@ -34,6 +37,5 @@ module.exports = async function init(opts) {
       -F enforce_admins=true`);
   }
 
-  sh('git add . && git commit -m "chore: bootstrap flujo git estandar" && git push');
   console.log('Repo bootstrapeado con el flujo estandar.');
 };

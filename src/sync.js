@@ -11,6 +11,7 @@ module.exports = async function sync() {
   writeFile('.github/workflows/release.yml', await fetchTemplate('release-caller.yml'));
   writeFile('.github/workflows/pr-checks.yml', await fetchTemplate('pr-checks-caller.yml'));
   writeFile('.github/workflows/labeler.yml', await fetchTemplate('labeler-caller.yml'));
+  writeFile('.github/workflows/close-issue.yml', await fetchTemplate('close-issue-caller.yml'));
   writeFile('.github/labeler.yml', await fetchTemplate('labeler.yml'));
   console.log('Plantillas sincronizadas con la ultima version de workflows-core.');
   console.log('Revisa el diff con git status/diff y haz commit si todo esta correcto.');

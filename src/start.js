@@ -6,7 +6,11 @@ module.exports = async function start({ type, title }) {
     throw new Error('--type debe ser "feat" o "fix"');
   }
 
-  const issueUrl = shOut(`gh issue create --title "${title}" --label "${type}" --body "Auto-creado por wf start"`);
+  try {
+    shOut(`gh label create ${type} --color "0E8A16" --description "${type} label" 2>/dev/null`);
+  } catch (_) {}
+
+  const issueUrl = shOut(`gh issue create --title "${title}" --label "${type}" --assignee "@me" --body "Auto-creado por wf start"`);
   const issueNumber = issueUrl.split('/').pop();
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   const branch = `${type}/${issueNumber}-${slug}`;
