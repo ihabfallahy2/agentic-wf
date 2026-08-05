@@ -1,6 +1,6 @@
 {
   "name": "@ihabfallahy2/agentic-wf",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "CLI de flujo git estandar para agentes IA (issue -> rama -> PR -> release)",
   "bin": {
     "wf": "bin/wf.js",
